@@ -1,0 +1,54 @@
+package service;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import ru.otus.hw.dao.QuestionDao;
+import ru.otus.hw.domain.Answer;
+import ru.otus.hw.domain.Question;
+import ru.otus.hw.service.IOService;
+import ru.otus.hw.service.TestServiceImpl;
+
+import java.util.List;
+
+import static org.mockito.Mockito.*;
+
+class TestServiceImplTest {
+
+    private IOService ioService;
+    private QuestionDao questionDao;
+    private TestServiceImpl testService;
+
+    @BeforeEach
+    void setUp() {
+        ioService = Mockito.mock(IOService.class);
+        questionDao = Mockito.mock(QuestionDao.class);
+        testService = new TestServiceImpl(ioService, questionDao);
+    }
+
+    @Test
+    void executeTest_shouldPrintQuestionsAndAnswers() {
+        List<Question> questions = List.of(
+            new Question("Question 1",
+                List.of(new Answer("Answer 1.1", true),
+                        new Answer("Answer 1.2", false))),
+            new Question("Question 2",
+                List.of(new Answer("Answer 2.1", false),
+                        new Answer("Answer 2.2", true)))
+        );
+
+        when(questionDao.findAll()).thenReturn(questions);
+
+        testService.executeTest();
+
+        verify(ioService, times(1)).printLine("");
+        verify(ioService, times(1)).printFormattedLine("Please answer the questions below%n");
+        verify(ioService, times(1)).printFormattedLine("Question 1: %s", "Question 1");
+        verify(ioService, times(1)).printFormattedLine("  %d. %s", 1, "Answer 1.1");
+        verify(ioService, times(1)).printFormattedLine("  %d. %s", 2, "Answer 1.2");
+        verify(ioService, times(1)).printLine("");
+        verify(ioService, times(1)).printFormattedLine("Question 2: %s", "Question 2");
+        verify(ioService, times(1)).printFormattedLine("  %d. %s", 1, "Answer 2.1");
+        verify(ioService, times(1)).printFormattedLine("  %d. %s", 2, "Answer 2.2");
+    }
+}
