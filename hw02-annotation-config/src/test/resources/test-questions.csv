@@ -1,0 +1,4 @@
+# Test questions
+What is the capital of Russia?;Moscow%true|London%false|Berlin%false
+What is the capital of France?;Moscow%false|London%false|Paris%true
+What is the capital of Germany?;Moscow%false|Berlin%true|London%false
