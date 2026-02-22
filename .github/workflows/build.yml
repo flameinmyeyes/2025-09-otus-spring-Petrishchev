@@ -1,0 +1,43 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [ 21 ]
+        module: [ hw01-xml-config, hw02-annotation-config, hw03-spring-boot ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Validate YAML format
+        run: |
+          if [ -f "${{ matrix.module }}/src/main/resources/application.yml" ]; then
+            echo "Checking YAML syntax in ${{ matrix.module }}"
+            python3 -c "import yaml; yaml.safe_load(open('${{ matrix.module }}/src/main/resources/application.yml'))"
+          fi
+
+      - name: Build with Maven
+        run: mvn -B clean verify --file ${{ matrix.module }}/pom.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.module }}-java${{ matrix.java-version }}
+          path: ${{ matrix.module }}/target/surefire-reports/
