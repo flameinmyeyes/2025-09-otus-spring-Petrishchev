@@ -1,5 +1,8 @@
 package ru.otus.hw.models;
 
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.Entity;
@@ -13,22 +16,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "genres")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Genre {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "text", nullable = false)
+    private String text;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
     @Override
     public String toString() {
-        return "Genre{id=" + id + ", name='" + name + "'}";
+        return "Comment{id=" + id + ", text='" + text + "'}";
     }
 
     @Override
@@ -42,8 +49,8 @@ public class Genre {
             return false;
         }
 
-        Genre genre = (Genre) o;
-        return id == genre.id;
+        Comment comment = (Comment) o;
+        return id == comment.id;
     }
 
     @Override
