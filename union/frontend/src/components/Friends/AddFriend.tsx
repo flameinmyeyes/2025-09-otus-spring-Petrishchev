@@ -1,0 +1,1 @@
+export { FriendList as AddFriend } from './FriendList';
