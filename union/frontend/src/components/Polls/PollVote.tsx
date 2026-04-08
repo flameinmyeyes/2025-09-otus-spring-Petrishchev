@@ -1,0 +1,1 @@
+export { PollList as PollVote } from './PollList';

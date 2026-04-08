@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:union_messenger;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  sql:
+    init:
+      mode: always
+      platform: h2
+      schema-locations: classpath:init_db.sql
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+encryption:
+  password: ${ENCRYPTION_PASSWORD:mySecretPassword123}
+  salt: ${ENCRYPTION_SALT:deadbeef12345678}
+  secret-key: ${ENCRYPTION_SECRET_KEY:base64EncodedKeyHere}
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+    display-request-duration: true
+  show-actuator: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationWithEnoughLength32chars
+  expiration: 86400000
+
+server:
+  port: 8080
